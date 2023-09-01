@@ -1,0 +1,41 @@
+services:
+  api:
+    env_file:
+      - ./api/.env
+    build: ./api
+    volumes:
+      - /app/api/node_modules
+      - ./api:/app/api
+    ports:
+      - '3001:3001'
+    command: sh -c "cd ../api && yarn && yarn start:debug"
+
+  database:
+    image: postgres:13
+    restart: always
+    env_file:
+      - ./docker/database/.env
+    ports:
+      - '5432:5432'
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  frontend:
+    env_file:
+      - ./frontend/.env.local
+    build: ./frontend
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    ports:
+      - '3000:3000'
+    command: sh -c "yarn && yarn dev"
+
+volumes:
+  database-data:

@@ -1,0 +1,1 @@
+export const doesErrorHaveMessage = (error: unknown): error is Record<string, unknown> & { message: string } => !!(error as any).message;
