@@ -11,11 +11,11 @@ You'll need:
 
 1. Create ```.env``` file in api directory and fill it with values from ```.env.dist``` (from api directory)
 2. Create ```.env``` file in docker/database directory and fill it with values from ```.env.dist``` (from docker/database directory)
-3. Create ```.env.local``` file in docker/frontend directory and fill it with values from ```.env.dist``` (from docker/frontend directory)
+3. Create ```.env.local``` file in frontend directory and fill it with values from ```.env.dist``` (from frontend directory)
 
 ## 2. Run docker-compose up -d
 
-## 3. Hopefully, you should be good to go.
+## 3. Hopefully, you should be good to go. :D
 
 - Visit frontend on http://localhost:3000
 - The API runs on http://localhost:3001. You can explore simple documentation on http://localhost:3001/docs

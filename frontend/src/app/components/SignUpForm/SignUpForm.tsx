@@ -59,7 +59,6 @@ const SignUpForm = () => {
     <>
       <Box
           sx={{
-            marginTop: '50%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
