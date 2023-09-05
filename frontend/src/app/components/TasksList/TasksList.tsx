@@ -3,29 +3,25 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import Tooltip from "@mui/material/Tooltip";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { Task } from "../../../../types";
-import { deleteTask, getTasks } from "@/app/api/api";
-import { LocalStorageKeys, Routes } from "@/app/enums";
+import { Task as TaskType } from "../../../../types";
+import { deleteTask, getAccessToken, getTasks } from "@/app/api/utils";
+import { Routes } from "@/app/enums";
 import { doesErrorHaveMessage } from "@/app/utils/typeguards";
+import Task from "../Task/Task";
 
 interface ToDoListProps {
-    tasks: Task[] | null
+    tasks: TaskType[] | null
     isLoading: boolean
     onTaskDelete: (taskId: number) => void
+    disabled?: boolean
 }
 
-const ToDoList = ({ tasks, isLoading, onTaskDelete }: ToDoListProps) => {
+const TasksList = ({ tasks, isLoading, onTaskDelete, disabled = false }: ToDoListProps) => {
     const router = useRouter();
 
     const [errorMessage, setErrorMessage] = useState<String | null>(null)
@@ -40,13 +36,9 @@ const ToDoList = ({ tasks, isLoading, onTaskDelete }: ToDoListProps) => {
     }
 
     const handleDeleteTask = async (taskId: number) => {
-        const accessToken = localStorage.getItem(LocalStorageKeys.AccessToken);
-
-        if (!accessToken) {
-            return;
-        }
-
         try {
+            const accessToken = await getAccessToken();
+
             const taskToDelete = tasks?.find((task) => task.id === taskId);
 
             await deleteTask(taskId, accessToken);
@@ -78,25 +70,14 @@ const ToDoList = ({ tasks, isLoading, onTaskDelete }: ToDoListProps) => {
     }
 
     return (
-        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+        <Box sx={{ width: '100%', bgColor: '#fff' }}>
             {tasks?.map(task => (
-                <Tooltip key={task.id} title={task.description}>
-                    <ListItem
-                        key={task.id}
-                        disablePadding
-                    >
-                        <ListItemIcon>
-                            <Checkbox
-                            onClick={() => handleDeleteTask(task.id)}
-                            edge="start"
-                            checked={false}
-                            tabIndex={-1}
-                            disableRipple
-                            />
-                        </ListItemIcon>
-                        <ListItemText primary={task.name} />
-                    </ListItem>
-                </Tooltip>
+                <Task
+                    key={task.id}
+                    task={task}
+                    onTaskDelete={handleDeleteTask}
+                    disabled={disabled}
+                />
             ))}
             <Snackbar
                 open={!!errorMessage}
@@ -118,8 +99,8 @@ const ToDoList = ({ tasks, isLoading, onTaskDelete }: ToDoListProps) => {
                 {successMessage}
                 </Alert>
           </Snackbar>
-        </List>
+        </Box>
     )
 }
 
-export default ToDoList;
+export default TasksList;

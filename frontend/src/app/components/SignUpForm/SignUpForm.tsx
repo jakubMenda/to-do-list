@@ -13,8 +13,8 @@ import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
-import { signUp } from '@/app/api/api';
-import { LocalStorageKeys, Routes } from '@/app/enums';
+import { signUp, storeAccessToken } from '@/app/api/utils';
+import { Routes } from '@/app/enums';
 import { doesErrorHaveMessage } from '@/app/utils/typeguards'
 import { signUpValidationSchema } from './validation';
 
@@ -41,7 +41,7 @@ const SignUpForm = () => {
 
       const response = await signUp(body);
 
-      localStorage.setItem(LocalStorageKeys.AccessToken, response.access_token);
+      await storeAccessToken(response.access_token);
 
       router.replace(Routes.Index);
 

@@ -6,13 +6,13 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { CookieStoreKeys, Routes } from './enums';
-import { getTasks } from './api/utils';
-import { Task } from '../../types';
-import TasksView from './components/TasksView/TasksView';
-import Navigation from './components/Navigation/Navigation';
+import { CookieStoreKeys, Routes } from '../enums';
+import { getFinishedTasks } from '../api/utils';
+import { Task } from '../../../types';
+import TasksView from '../components/TasksView/TasksView';
+import Navigation from '../components/Navigation/Navigation';
 
-const getTasksAction = async (): Promise<{ tasks: Task[] }> => {
+const getCompletedTasksAction = async (): Promise<{ tasks: Task[] }> => {
     const cookieStore = cookies();
 
     const accessToken = cookieStore.get(CookieStoreKeys.AccessToken);
@@ -21,13 +21,13 @@ const getTasksAction = async (): Promise<{ tasks: Task[] }> => {
       redirect(Routes.SignIn);
     }
 
-    const tasks = await getTasks(accessToken.value);
+    const tasks = await getFinishedTasks(accessToken.value);
 
     return { tasks };
 }
 
-const Home = async () => {
-  const { tasks } = await getTasksAction();
+const CompletedTasks = async () => {
+  const { tasks } = await getCompletedTasksAction();
 
   return (
     <Container maxWidth="md" sx={{ mt: '4rem' }}>
@@ -45,14 +45,9 @@ const Home = async () => {
             textAlign: 'center'
           }}
         >
-          Simple Tasks App
+          Finished tasks
         </Typography>
-        <Typography
-          sx={{ marginBottom: '2rem', textAlign: 'center' }}
-        >
-          Behold and rejoice!
-        </Typography>
-        <TasksView tasks={tasks} />
+        <TasksView tasks={tasks} disabled />
       </Box>
       <Box sx={{ position: 'fixed', bottom: 50, left: '50%', transform: 'translate(-50%, 0)' }}>
         <Navigation />
@@ -61,4 +56,4 @@ const Home = async () => {
   )
 }
 
-export default Home;
+export default CompletedTasks;

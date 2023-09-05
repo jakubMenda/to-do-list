@@ -22,7 +22,20 @@ export class TasksController {
     @ApiResponse({ status: HttpStatus.OK, description: 'tasks retrieved' })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'unauthorized' })
     findAll(@Req() request: RequestWithUser): Promise<Task[]> {
-        return this.tasksRepository.findBy ({ user_id: request.user.id });
+        return this.tasksRepository.findBy({ user_id: request.user.id });
+    }
+
+    @Get('finished')
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({ status: HttpStatus.OK, description: 'tasks retrieved' })
+    @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'unauthorized' })
+    async findFinished(@Req() request: RequestWithUser): Promise<Task[]> {
+        return this.tasksRepository
+            .createQueryBuilder('task')
+            .andWhere('task.deleted_at IS NOT NULL')
+            .andWhere('task.user_id = :user_id', { user_id: request.user.id })
+            .withDeleted() 
+            .getMany()
     }
 
     @Get(':id')

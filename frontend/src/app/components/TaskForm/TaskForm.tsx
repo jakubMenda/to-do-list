@@ -1,13 +1,9 @@
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Avatar from '@mui/material/Avatar';
 import { AddTaskOutlined } from '@mui/icons-material';
-import { PostTaskBodyParams, postTask } from '@/app/api/api';
-import { LocalStorageKeys, Routes } from '@/app/enums';
+import { PostTaskBodyParams, getAccessToken, postTask } from '@/app/api/utils';
 import { doesErrorHaveMessage } from '@/app/utils/typeguards';
 import { taskFormValidationSchema } from './validation';
 
@@ -17,8 +13,6 @@ interface TaskFormProps {
 }
 
 const TaskForm = ({ onSuccess, onError }: TaskFormProps) => {
-    const router = useRouter();
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         
@@ -30,7 +24,7 @@ const TaskForm = ({ onSuccess, onError }: TaskFormProps) => {
         };
     
         try {
-            const accessToken = localStorage.getItem(LocalStorageKeys.AccessToken);
+            const accessToken = await getAccessToken();
 
             if (!accessToken) {
                 throw new Error('Unauthorized');
@@ -84,6 +78,9 @@ const TaskForm = ({ onSuccess, onError }: TaskFormProps) => {
                 label="Description"
                 id="description"
                 autoComplete="Please. Do something meaningful."
+                multiline
+                minRows={5}
+                maxRows={5}
                 />
                 <Button
                 type="submit"

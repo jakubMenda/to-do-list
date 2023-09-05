@@ -10,7 +10,7 @@ import Alert from "@mui/material/Alert";
 import { Add, Close } from '@mui/icons-material';
 
 import TaskForm from '../TaskForm/TaskForm';
-import { PostTaskBodyParams } from '@/app/api/api';
+import { PostTaskBodyParams } from '@/app/api/utils';
 
 interface TaskDialogProps {
     onAddNewTask: () => Promise<void> | void

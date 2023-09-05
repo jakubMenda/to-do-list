@@ -13,8 +13,8 @@ import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
-import { signIn } from '@/app/api/api';
-import { LocalStorageKeys, Routes } from '@/app/enums';
+import { signIn, storeAccessToken } from '@/app/api/utils';
+import { Routes } from '@/app/enums';
 import { doesErrorHaveMessage } from '@/app/utils/typeguards'
 
 const SignInForm = () => {
@@ -40,7 +40,7 @@ const SignInForm = () => {
     try {
       const response = await signIn(body);
 
-      localStorage.setItem(LocalStorageKeys.AccessToken, response.access_token);
+      await storeAccessToken(response.access_token);
 
       setIsLoading(false);
 

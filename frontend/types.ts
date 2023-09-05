@@ -7,3 +7,12 @@ export interface Task {
     deleted_at: string
     updated_at: string;
 }
+
+export enum NextProxyResponseStatus {
+    Success = 'success',
+    Failure = 'failure'
+}
+
+export interface NextProxyBaseResponse {
+    status: NextProxyResponseStatus
+}
